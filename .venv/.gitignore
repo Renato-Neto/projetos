@@ -1,31 +1,23 @@
-# Virtual environment directories
+# Ignore virtual environments
 .venv/
-# Byte-compiled / optimized / DLL files
-__pycache__/
-*.py[cod]
-*$py.class
+venv/
 
-# Distribution / packaging
-build/
-dist/
-*.egg-info/
-
-# Environment variable files
-.env
-
-# VS Code settings
+# Ignore VS Code settings
 .vscode/
 
-# Logs and temp files
+# Ignore Python cache and compiled files
+__pycache__/
+*.py[cod]
+
+# Ignore other temp files
 *.log
 *.temp
 *.tmp
 *.swp
 *.swo
-*~
 
-# Jupyter Notebooks checkpoints
-.ipynb_checkpoints/
-
-# Pytest cache
-.cache/
+# Ignore virtual environment files if they are in other folders
+Include/
+Lib/
+Scripts/
+pyvenv.cfg
