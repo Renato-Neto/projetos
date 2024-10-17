@@ -1,13 +1,16 @@
-from langchain import LLMChain
+from langchain.chains import LLMChain  # Importando da forma correta
 from langchain.prompts import PromptTemplate
 from gpt4all import GPT4All
+import os
 
-# Caminho onde o modelo GPT-4All está armazenado
-MODEL_PATH = "./models/gpt4all-j-v1.3-groovy.bin"
-MODEL_NAME = "gpt4all-j-v1.3-groovy"
+# Caminho onde o modelo GPT-4All está armazenado (relativo ao diretório raiz do projeto)
+MODEL_PATH = os.path.join(os.path.dirname(__file__), '..', 'models', 'gpt4all-j-v1.3-groovy.bin')
 
-# Carregar o modelo GPT-4All
-gpt4all_model = GPT4All(model_path=MODEL_PATH)
+# Carregar o modelo GPT-4All usando o caminho do arquivo
+try:
+    gpt4all_model = GPT4All(model_name=MODEL_PATH)
+except Exception as e:
+    raise RuntimeError(f"Erro ao carregar o modelo GPT-4All: {e}")
 
 # Definir um wrapper para GPT-4All para ser compatível com Langchain
 class GPT4AllLLM:
@@ -16,7 +19,11 @@ class GPT4AllLLM:
     
     def _call(self, prompt: str) -> str:
         """Método que envia o prompt para o GPT-4All e obtém a resposta."""
-        return self.model.generate(prompt)
+        try:
+            response = self.model.generate(prompt, max_tokens=100, temperature=0.7)
+            return response
+        except Exception as e:
+            return f"Erro ao gerar resposta: {e}"
 
 # Criar o modelo Langchain usando GPT-4All
 llm = GPT4AllLLM(gpt4all_model)
