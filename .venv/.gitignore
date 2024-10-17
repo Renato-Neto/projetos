@@ -21,3 +21,5 @@ Include/
 Lib/
 Scripts/
 pyvenv.cfg
+# Ignore VS Code settings
+.vscode/
