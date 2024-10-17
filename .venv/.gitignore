@@ -1,0 +1,31 @@
+# Virtual environment directories
+.venv/
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+
+# Environment variable files
+.env
+
+# VS Code settings
+.vscode/
+
+# Logs and temp files
+*.log
+*.temp
+*.tmp
+*.swp
+*.swo
+*~
+
+# Jupyter Notebooks checkpoints
+.ipynb_checkpoints/
+
+# Pytest cache
+.cache/
