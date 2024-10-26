@@ -1,0 +1,39 @@
+# Ambiente Virtual
+venv/
+.venv/
+
+# Configurações e arquivos do ambiente do VSCode
+.vscode/
+__pycache__/
+*.pyc
+*.pyo
+
+# Arquivos de log
+*.log
+
+# Configurações e arquivos do sistema operacional
+.DS_Store
+Thumbs.db
+
+# Configurações de IDEs
+.idea/
+
+# Configurações do PyCharm e outros IDEs
+*.iml
+*.sublime*
+*.vscode/
+.idea/
+
+# Configurações do Jupyter e IPython
+.ipynb_checkpoints
+
+# Arquivos temporários e de cache
+*.swp
+*.swo
+.cache/
+
+# Configurações para Selenium e Firefox
+geckodriver.log
+
+# Outros arquivos temporários
+*.bak
