@@ -1,55 +1,39 @@
-from langchain.chains import LLMChain  # Importando da forma correta
+from transformers import AutoModelForCausalLM, AutoTokenizer
+from langchain.chains import LLMChain
 from langchain.prompts import PromptTemplate
-from gpt4all import GPT4All
-import os
 
-# Caminho onde o modelo GPT-4All está armazenado (relativo ao diretório raiz do projeto)
-MODEL_PATH = os.path.join(os.path.dirname(__file__), '..', 'models', 'gpt4all-j-v1.3-groovy.bin')
+# Carregar modelo Hugging Face (exemplo: GPT-2 em português)
+model_name = "pierreguillou/gpt2-small-portuguese"
+tokenizer = AutoTokenizer.from_pretrained(model_name)
+model = AutoModelForCausalLM.from_pretrained(model_name)
 
-# Carregar o modelo GPT-4All usando o caminho do arquivo
-try:
-    gpt4all_model = GPT4All(model_name=MODEL_PATH)
-except Exception as e:
-    raise RuntimeError(f"Erro ao carregar o modelo GPT-4All: {e}")
+# Definir template do prompt
+template = """Você é um assistente imobiliário prestativo. Responda à seguinte pergunta:\n{question}\n"""
+prompt = PromptTemplate(input_variables=["question"], template=template)
 
-# Definir um wrapper para GPT-4All para ser compatível com Langchain
-class GPT4AllLLM:
-    def __init__(self, model):
+# Cri
+# ar classe para usar o modelo na CPU
+
+
+class HuggingFaceLLM:
+    def __init__(self, model, tokenizer):
         self.model = model
-    
+        self.tokenizer = tokenizer
+
     def _call(self, prompt: str) -> str:
-        """Método que envia o prompt para o GPT-4All e obtém a resposta."""
-        try:
-            response = self.model.generate(prompt, max_tokens=100, temperature=0.7)
-            return response
-        except Exception as e:
-            return f"Erro ao gerar resposta: {e}"
+        inputs = self.tokenizer(prompt, return_tensors="pt")
+        outputs = self.model.generate(**inputs)
+        return self.tokenizer.decode(outputs[0], skip_special_tokens=True)
+# Inicializar o modelo com LangChain
+llm=  HuggingFaceLLM(model, tokenizer)
 
-# Criar o modelo Langchain usando GPT-4All
-llm = GPT4AllLLM(gpt4all_model)
 
-# Definir o template do prompt para ser usado com Langchain
-template = """Você é um assistente imobiliário prestativo. Responda à seguinte pergunta:
-{question}
-"""
+llm_chain = LLMChain(llm=llm, prompt=prompt)
 
-prompt = PromptTemplate(
-    input_variables=["question"],
-    template=template,
-)
 
-# Criar a cadeia LLMChain com o modelo e o prompt
-llm_chain = LLMChain(
-    llm=llm, 
-    prompt=prompt
-)
-
+# Função para processar a consulta do usuário
 def process_user_query(question: str) -> str:
-    """
-    Função que processa a pergunta do usuário e retorna uma resposta gerada pelo GPT-4All via Langchain.
-    """
     try:
-        # Gerar a resposta usando Langchain com GPT-4All como modelo
         response = llm_chain.run({"question": question})
         return response
     except Exception as e:

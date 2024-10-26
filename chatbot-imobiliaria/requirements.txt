@@ -1,5 +1,9 @@
 fastapi==0.115.2
-langchain==0.3.3
+langchain
 python-dotenv==1.0.1
 uvicorn==0.32.0
-gpt4all==2.8.2
+cuda-python==12.6.0
+transformers==4.45.2
+torch>=1.10.0
+flask==2.1.1 
+pydantic

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scraper de Produtos</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Scraper de Produtos</h1>
+        <form id="scraper-form">
+            <label for="url">URL da Página de Produtos:</label>
+            <input type="text" id="url" name="url" placeholder="Insira a URL da página de produtos..." required>
+            <button type="submit">Buscar Produtos</button>
+        </form>
+        
+        <!-- Ícone de carregamento, inicialmente oculto -->
+        <div id="loading" class="hidden">
+            <iframe src="https://giphy.com/embed/3oEjI6SIIHBdRxXI40" width="100" height="100" frameBorder="0" allowFullScreen></iframe>
+        </div>
+
+        <!-- Container para exibir os resultados -->
+        <div id="results"></div>
+    </div>
+
+    <!-- Script AJAX básico -->
+    <script>
+        document.getElementById('scraper-form').addEventListener('submit', function(e) {
+            e.preventDefault(); // Impede o envio padrão do formulário
+            document.getElementById('loading').classList.remove('hidden'); // Mostra o ícone de carregamento
+            document.getElementById('results').innerHTML = ''; // Limpa os resultados anteriores
+
+            const formData = new FormData(this);
+            fetch('/scrape', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('loading').classList.add('hidden'); // Esconde o ícone de carregamento
+                if (data.products) {
+                    let resultHTML = '<h2>Produtos encontrados:</h2><ul>';
+                    data.products.forEach(product => {
+                        resultHTML += `<li>${product.title} - ${product.price}</li>`;
+                    });
+                    resultHTML += '</ul>';
+                    document.getElementById('results').innerHTML = resultHTML;
+                } else {
+                    document.getElementById('results').textContent = 'Nenhum produto encontrado.';
+                }
+            })
+            .catch(() => {
+                document.getElementById('loading').classList.add('hidden'); // Esconde o ícone de carregamento
+                document.getElementById('results').textContent = 'Erro ao buscar produtos.';
+            });
+        });
+    </script>
+</body>
+</html>
